@@ -10,13 +10,11 @@ class CustomInput extends React.Component {
           type={this.props.type}
           placeholder={this.props.placeholder}
           onChange={this.props.onChange}
-          value={this.props.value}
-          // required={this.props.required}
+          value={this.props.record.value}
+          maxLength={this.props.maxLength}
         />
-        <span className="emptyField">Empty field. Please fill out</span>
-        <span className="capitalLetter">
-          First and last name with a capital letter.
-        </span>
+
+        <span className="fieldError">{this.props.record.error}</span>
       </label>
     );
   }
