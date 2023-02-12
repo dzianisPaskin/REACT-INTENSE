@@ -1,26 +1,30 @@
-import React from "react";
+import React from 'react';
 
 
-class CustomTextArea extends React.Component {
-  render() {
-    return (
-      <label>
-        {this.props.areaName}
-        <textarea
-          className={this.props.className}
-          name={this.props.name}
-          onChange={this.props.onChange}
-          value={this.props.value}
-          rows={7}
-          maxLength={this.props.maxLength}
-        />
-        <p className={this.props.className}>
-          Characters remaining: {this.props.remCharacters} /600
-        </p>
-      </label>
-    );
-  }
-}
+const CustomTextArea = ({
+  areaName,
+  className,
+  onChange,
+  name,
+  maxLength,
+  record,
+}) => {
+  return (
+    <label>
+      {areaName}
+      <textarea
+        className={className}
+        name={name}
+        onChange={onChange}
+        value={record.value}
+        rows={7}
+        maxLength={maxLength}
+      />
 
+      <p className={className}>Characters remaining: {600 - record.value.length} / 600</p>
+      <p className='emptyTextField'>{record.error}</p>
+    </label>
+  );
+};
 
-export default CustomTextArea
+export default CustomTextArea;

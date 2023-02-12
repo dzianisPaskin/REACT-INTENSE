@@ -1,142 +1,369 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CustomInput from './CustomInput';
 import CustomTextArea from './CustomTextArea';
 import Button from './Button';
+import Modal from './Modal';
 
-class Form extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: { value: '', error: '', isStringInput: true },
-      surname: { value: '', error: '', isStringInput: true },
-      birthday: { value: '', error: '', isStringInput: false },
-      phone: { value: '', error: '', isStringInput: false },
-      link: { value: '', error: '', isStringInput: true },
-      textAbout: {
-        value: '',
+const Form = () => {
+  const [inputName, setInputName] = useState({ value: '', error: '' });
+  const [inputSurname, setInputSurname] = useState({ value: '', error: '' });
+  const [inputBirthday, setInputBirthday] = useState({ value: '', error: '' });
+  const [inputPhone, setInputPhone] = useState({ value: '', error: '' });
+  const [inputSite, setinputSite] = useState({ value: 'https://', error: '' });
+  const [textAbout, setTextAbout] = useState({ value: '', error: '' });
+  const [textStack, setTextStack] = useState({ value: '', error: '' });
+  const [textDescription, setTextDescription] = useState({
+    value: '',
+    error: '',
+  });
+
+  const [validField, setValidField] = useState({
+    isValidName: false,
+    isValidSurname: false,
+    isValidBirthday: false,
+    isValidPhone: false,
+    isValidSite: false,
+    isValidTextAbout: false,
+    isValidTextStack: false,
+    isValidTextDescription: false,
+  });
+
+  const [formValid, setFormValid] = useState(false);
+
+  const handleInputName = (e) => {
+    const targetValue = e.target.value;
+
+    if (!/[A-Z]/.test(targetValue[0])) {
+      setInputName({
+        ...inputName,
+        value: targetValue,
+        error: 'First letter should be capitalized',
+      });
+      setValidField({
+        ...validField,
+        isValidName: false,
+      });
+    } else {
+      setInputName({
+        ...inputName,
+        value: targetValue,
         error: '',
-        remaining: 600,
-        isStringInput: true,
-      },
-      textStack: {
-        value: '',
-        error: '',
-        remaining: 600,
-        isStringInput: true,
-      },
-      textDescription: {
-        value: '',
-        error: '',
-        remaining: 600,
-        isStringInput: true,
-      }
-    };
-  }
-
-  handlerTextInput = (e) => {
-    const name = e.target.className;
-    const value = e.target.value;
-
-    const record = this.state[name];
-
-    if (name === 'name') {
-      !/[A-Z]/.test(value[0])
-        ? (record.error = 'First letter should be capitale')
-        : (record.error = '');
+      });
+      setValidField({
+        ...validField,
+        isValidName: true,
+      });
     }
-    if (name === 'surname') {
-      !/[A-Z]/.test(value[0])
-        ? (record.error = 'First letter should be capitale')
-        : (record.error = '');
-    }
 
-    this.setState({ [name]: { ...record, value: value.trim() } });
+    if (targetValue === '') {
+      setInputName({
+        ...inputName,
+        value: targetValue,
+        error: 'Fill in the field',
+      });
+      setValidField({
+        ...validField,
+        isValidName: false,
+      });
+    }
   };
+  const handleInputSurname = (e) => {
+    const targetValue = e.target.value;
 
-  handlePhone = (e) => {
-    const val = e.target.value
+    if (!/[A-Z]/.test(targetValue[0])) {
+      setInputSurname({
+        ...inputSurname,
+        value: targetValue,
+        error: 'First letter should be capitalized',
+      });
+      setValidField({
+        ...validField,
+        isValidSurname: false,
+      });
+    } else {
+      setInputSurname({
+        ...inputSurname,
+        value: targetValue,
+        error: '',
+      });
+      setValidField({
+        ...validField,
+        isValidSurname: true,
+      });
+    }
+
+    if (targetValue === '') {
+      setInputSurname({
+        ...inputSurname,
+        value: targetValue,
+        error: 'Fill in the field',
+      });
+      setValidField({
+        ...validField,
+        isValidSurname: false,
+      });
+    }
+  };
+  const handleBirthday = (e) => {
+    const targetValue = e.target.value;
+    setInputBirthday({ ...inputBirthday, value: targetValue });
+
+    if (targetValue === '') {
+      setInputBirthday({
+        ...inputBirthday,
+        value: targetValue,
+        error: 'Fill in the field',
+      });
+      setValidField({
+        ...validField,
+        isValidBirthday: false,
+      });
+    } else {
+      setInputBirthday({ ...inputBirthday, value: targetValue, error: '' });
+      setValidField({
+        ...validField,
+        isValidBirthday: true,
+      });
+    }
+  };
+  const handlePhone = (e) => {
+    const targetValue = e.target.value;
+    const valReplace = e.target.value
       .replace(/\D/g, '')
       .match(/(\d{0,1})(\d{0,4})(\d{0,2})(\d{0,2})/);
 
-    const record = this.state.phone;
-
-    this.setState({
-      phone: {
-        ...record,
-        value: !val[2]
-          ? val[1]
-          : val[1] +
+    if (targetValue !== '') {
+      setInputPhone({
+        ...inputPhone,
+        value: !valReplace[2]
+          ? valReplace[1]
+          : valReplace[1] +
             '-' +
-            val[2] +
-            (val[3] ? '-' + val[3] : '') +
-            (val[4] ? '-' + val[4] : ''),
-      },
-    });
-  };
-
-  handleUrl = (e) => {
-    const record = this.state.link;
-    const url = e.target.value;
-    const pattern = /^(https:\/\/)/;
-    const isValid = pattern.test(url);
-
-    if (isValid) {
-      this.setState({ link: { ...record, value: url } });
+            valReplace[2] +
+            (valReplace[3] ? '-' + valReplace[3] : '') +
+            (valReplace[4] ? '-' + valReplace[4] : ''),
+        error: '',
+      });
+      setValidField({
+        ...validField,
+        isValidPhone: true,
+      });
     } else {
-      this.setState({ link: { ...record, value: '' } });
-      record.error = 'the site should begin with https://';
+      console.log(targetValue);
+      console.log();
+      setInputPhone({
+        ...inputPhone,
+        value: '',
+        error: 'Fill in the field',
+      });
+      setValidField({
+        ...validField,
+        isValidPhone: true,
+      });
     }
-
-    this.setState({ link: { value: e.target.value } });
   };
+  const handleUrl = (e) => {
+    const targetValue = e.target.value;
 
-  handleTextArea = (e) => {
+    if (targetValue.startsWith('https://')) {
+      setinputSite({ ...inputSite, value: targetValue, error: '' });
+      setValidField({ ...validField, isValidSite: true });
+    } else if (targetValue === '') {
+      setinputSite({
+        ...inputSite,
+        value: targetValue,
+        error: 'Fill in the field',
+      });
+      setValidField({ ...validField, isValidSite: false });
+    } else {
+      setinputSite({
+        ...inputSite,
+        value: targetValue,
+        error: 'the site should begin with https://',
+      });
+      setValidField({ ...validField, isValidSite: true });
+    }
+  };
+  const handleTextArea = (e) => {
     const name = e.target.className;
-    const value = e.target.value;
+    const targetValue = e.target.value;
 
-    const record = this.state[name];
-    console.log(record)
+    switch (name) {
+      case 'textAbout':
+        setTextAbout({ ...textAbout, value: targetValue });
 
-    const rem = 600 - value.length;
+        if (targetValue) {
+          setValidField({
+            ...validField,
+            isValidTextAbout: true,
+          });
+          setTextAbout({ ...textAbout, value: targetValue, error: '' });
+        } else {
+          setTextAbout({
+            ...textAbout,
+            value: targetValue,
+            error: 'Fill in the field',
+          });
+        }
 
-    this.setState({
-      [name]: {
-        ...record,
-        value: value,
-        remaining: rem,
-      },
-    });
-    console.log(value.length);
+        break;
+      case 'textStack':
+        setTextStack({ ...textStack, value: targetValue });
+
+        if (targetValue) {
+          setValidField({
+            ...validField,
+            isValidTextStack: true,
+          });
+          setTextStack({ ...textStack, value: targetValue, error: '' });
+        } else {
+          setTextStack({
+            ...textStack,
+            value: targetValue,
+            error: 'Fill in the field',
+          });
+          setValidField({
+            ...validField,
+            isValidTextStack: true,
+          });
+        }
+        break;
+      case 'textDescription':
+        setTextDescription({ ...textDescription, value: targetValue });
+
+        if (targetValue) {
+          setValidField({
+            ...validField,
+            isValidTextDescription: true,
+          });
+          setTextDescription({
+            ...textDescription,
+            value: targetValue,
+            error: '',
+          });
+        } else {
+          setTextDescription({
+            ...textDescription,
+            value: targetValue,
+            error: 'Fill in the field',
+          });
+          setValidField({
+            ...validField,
+            isValidTextDescription: true,
+          });
+        }
+        break;
+      default:
+        return;
+    }
   };
 
-  handleSubmit = (e) => {
-    const newState = { ...this.state };
+  const buttonReset = (e) => {
+    const targetType = e.target.type;
 
-    for (let key in newState) {
-      const record = newState[key];
+    setInputName({ value: '', error: '' });
+    setInputSurname({ value: '', error: '' });
+    setInputBirthday({ value: '', error: '' });
+    setInputPhone({ value: '', error: '' });
+    setinputSite({ value: 'https://', error: '' });
+    setTextAbout({ value: '', error: '' });
+    setTextStack({ value: '', error: '' });
+    setTextDescription({ value: '', error: '' });
 
-      record.error = '';
+    if (targetType === 'reset') {
+      setFormValid(false);
+    }
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-      if (!record.value) {
-        record.error = 'Please fill the field';
+    let isValid = true;
+
+    for (let field in validField) {
+      const isValidField = validField[field];
+
+      if (isValidField !== true) {
+        switch (field) {
+          case 'isValidName':
+            setInputName({
+              ...inputName,
+              error: 'Fill in the field correctly',
+            });
+            isValid = false;
+            break;
+          case 'isValidSurname':
+            setInputSurname({
+              ...inputSurname,
+              error: 'Fill in the field correctly',
+            });
+            isValid = false;
+            break;
+          case 'isValidBirthday':
+            setInputBirthday({
+              ...inputBirthday,
+              error: 'Fill in the field correctly',
+            });
+            isValid = false;
+            break;
+          case 'isValidPhone':
+            setInputPhone({
+              ...inputPhone,
+              error: 'Fill in the field correctly',
+            });
+            isValid = false;
+            break;
+          case 'isValidSite':
+            setinputSite({
+              ...inputSite,
+              error: 'Fill in the field correctly',
+            });
+            isValid = false;
+            break;
+          case 'isValidTextAbout':
+            setTextAbout({
+              ...textAbout,
+              error: 'Fill in the field correctly',
+            });
+            isValid = false;
+            break;
+          case 'isValidTextStack':
+            setTextStack({
+              ...textStack,
+              error: 'Fill in the field correctly',
+            });
+            isValid = false;
+            break;
+          case 'isValidTextDescription':
+            setTextDescription({
+              ...textDescription,
+              error: 'Fill in the field correctly',
+            });
+            isValid = false;
+            break;
+          default:
+            break;
+        }
       }
     }
-    this.setState(newState);
-    e.preventDefault();
+    if (isValid) {
+      setFormValid(true);
+      buttonReset(e);
+    }
   };
 
-  render() {
-    return (
+  return (
+    <>
+      {formValid && <Modal onClick={buttonReset} />}
       <div className="formContainer">
         <h1>Create a questionnaire</h1>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <CustomInput
             className="name"
             labelName="Name:"
             type="text"
             placeholder="Name"
-            onChange={this.handlerTextInput}
-            record={this.state.name}
+            onChange={handleInputName}
+            record={inputName}
           />
 
           <CustomInput
@@ -144,15 +371,15 @@ class Form extends React.Component {
             labelName="Surname:"
             type="text"
             placeholder="Surname"
-            onChange={this.handlerTextInput}
-            record={this.state.surname}
+            onChange={handleInputSurname}
+            record={inputSurname}
           />
           <CustomInput
             className="birthday"
             labelName="Date of Birth:"
             type="date"
-            onChange={this.handlerTextInput}
-            record={this.state.birthday}
+            onChange={handleBirthday}
+            record={inputBirthday}
           />
 
           <CustomInput
@@ -160,8 +387,8 @@ class Form extends React.Component {
             labelName="Phone Number:"
             type="tel"
             placeholder="7-7777-77-77"
-            onChange={this.handlePhone}
-            record={this.state.phone}
+            onChange={handlePhone}
+            record={inputPhone}
             maxLength="12"
           />
           <CustomInput
@@ -169,44 +396,43 @@ class Form extends React.Component {
             labelName="Site:"
             type="url"
             placeholder="https://"
-            onChange={this.handleUrl}
-            record={this.state.link}
+            onChange={handleUrl}
+            record={inputSite}
           />
 
           <CustomTextArea
             className="textAbout"
             areaName="About:"
             name="about"
-            onChange={this.handleTextArea}
-            record={this.state.textAbout}
-            remCharacters={this.state.textAbout.remaining}
+            onChange={handleTextArea}
+            record={textAbout}
             maxLength="600"
           />
           <CustomTextArea
             className="textStack"
             areaName="Technology Stack:"
             name="stack"
-            onChange={this.handleTextArea}
-            record={this.state.textStack}
-            remCharacters={this.state.textStack.remaining}
+            onChange={handleTextArea}
+            record={textStack}
+            remCharacters={textStack.remaining}
             maxLength="600"
           />
           <CustomTextArea
             className="textDescription"
             areaName="Description of the last project:"
-            onChange={this.handleTextArea}
-            record={this.state.textDescription}
-            remCharacters={this.state.textDescription.remaining}
+            onChange={handleTextArea}
+            record={textDescription}
+            remCharacters={textDescription.remaining}
             maxLength="600"
           />
           <div className="formButtons">
-            <Button type="reset" innerText="Cancel" />
+            <Button type="reset" innerText="Cancel" onClick={buttonReset} />
             <Button type="submit" innerText="Save" />
           </div>
         </form>
       </div>
-    );
-  }
-}
+    </>
+  );
+};
 
 export default Form;

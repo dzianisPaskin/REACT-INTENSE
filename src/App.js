@@ -2,16 +2,12 @@ import React from 'react';
 import './App.css';
 import Form from './components/Form';
 
-
-class App extends React.Component {
- render() {
+const App = () => {
   return (
     <div className="formWrap">
-      <Form  />
+      <Form />
     </div>
   );
-} 
-  
-}
+};
 
 export default App;

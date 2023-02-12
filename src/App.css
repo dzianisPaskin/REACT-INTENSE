@@ -23,7 +23,7 @@
   flex-direction: column;
   width: 30rem;
   margin: 0 auto;
-
+  z-index: 1;
   border: 1px solid #ccc;
   border-radius: 10px;
   background: white;
@@ -61,16 +61,16 @@ textarea {
   margin-bottom: 2rem;
 }
 
-p {
+p,
+.emptyTextField {
   font-size: 0.8rem;
   color: green;
- position: absolute;
- bottom: 0;
+  position: absolute;
+  bottom: 0;
 }
 
-.formButtons {
-  display: flex;
-  justify-content: space-around;
+.emptyTextField {
+  right: 0;
 }
 
 .fieldError {
@@ -78,8 +78,13 @@ p {
   color: red;
   position: absolute;
   top: 5rem;
-  left: 12rem;
+  right: 0;
   opacity: 1;
+}
+
+.formButtons {
+  display: flex;
+  justify-content: space-around;
 }
 
 button {
@@ -94,4 +99,33 @@ button {
   background: rgb(165, 189, 150);
 
   color: #ffffff;
+}
+
+.overlay {
+  z-index: 1000;
+}
+
+.modal {
+  position: fixed;
+  width: 400px;
+  height: 200px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  border: 1px solid black;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
 }
