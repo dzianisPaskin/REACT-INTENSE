@@ -2,13 +2,22 @@ import React, { useState } from 'react';
 import CustomInput from './CustomInput';
 import CustomTextArea from './CustomTextArea';
 import Button from './Button';
-import Modal from './Modal';
+import { FormInfo } from './FormInfo';
 
 const Form = () => {
   const [inputName, setInputName] = useState({ value: '', error: '' });
-  const [inputSurname, setInputSurname] = useState({ value: '', error: '' });
-  const [inputBirthday, setInputBirthday] = useState({ value: '', error: '' });
-  const [inputPhone, setInputPhone] = useState({ value: '', error: '' });
+  const [inputSurname, setInputSurname] = useState({
+    value: '',
+    error: '',
+  });
+  const [inputBirthday, setInputBirthday] = useState({
+    value: '',
+    error: '',
+  });
+  const [inputPhone, setInputPhone] = useState({
+    value: '',
+    error: '',
+  });
   const [inputSite, setinputSite] = useState({ value: 'https://', error: '' });
   const [textAbout, setTextAbout] = useState({ value: '', error: '' });
   const [textStack, setTextStack] = useState({ value: '', error: '' });
@@ -190,9 +199,17 @@ const Form = () => {
 
     switch (name) {
       case 'textAbout':
-        setTextAbout({ ...textAbout, value: targetValue });
-
-        if (targetValue) {
+        if (targetValue.length > 600) {
+          setTextAbout({
+            ...textAbout,
+            value: targetValue,
+            error: 'Fill In the field correctly',
+          });
+          setValidField({
+            ...validField,
+            isValidTextAbout: false,
+          });
+        } else if (targetValue) {
           setValidField({
             ...validField,
             isValidTextAbout: true,
@@ -208,9 +225,18 @@ const Form = () => {
 
         break;
       case 'textStack':
-        setTextStack({ ...textStack, value: targetValue });
-
-        if (targetValue) {
+        if (targetValue.length > 600) {
+          console.log('length is more than 600');
+          setTextStack({
+            ...textStack,
+            value: targetValue,
+            error: 'Fill In the field correctly',
+          });
+          setValidField({
+            ...validField,
+            isValidTextStack: false,
+          });
+        } else if (targetValue) {
           setValidField({
             ...validField,
             isValidTextStack: true,
@@ -222,16 +248,22 @@ const Form = () => {
             value: targetValue,
             error: 'Fill in the field',
           });
-          setValidField({
-            ...validField,
-            isValidTextStack: true,
-          });
         }
+
         break;
       case 'textDescription':
-        setTextDescription({ ...textDescription, value: targetValue });
-
-        if (targetValue) {
+        if (targetValue.length > 600) {
+          console.log('length is more than 600');
+          setTextDescription({
+            ...textDescription,
+            value: targetValue,
+            error: 'Fill In the field correctly',
+          });
+          setValidField({
+            ...validField,
+            isValidTextDescription: false,
+          });
+        } else if (targetValue) {
           setValidField({
             ...validField,
             isValidTextDescription: true,
@@ -247,11 +279,8 @@ const Form = () => {
             value: targetValue,
             error: 'Fill in the field',
           });
-          setValidField({
-            ...validField,
-            isValidTextDescription: true,
-          });
         }
+
         break;
       default:
         return;
@@ -347,90 +376,100 @@ const Form = () => {
     }
     if (isValid) {
       setFormValid(true);
-      buttonReset(e);
     }
   };
 
   return (
     <>
-      {formValid && <Modal onClick={buttonReset} />}
-      <div className="formContainer">
-        <h1>Create a questionnaire</h1>
-        <form onSubmit={handleSubmit}>
-          <CustomInput
-            className="name"
-            labelName="Name:"
-            type="text"
-            placeholder="Name"
-            onChange={handleInputName}
-            record={inputName}
-          />
+      {formValid ? (
+        <FormInfo
+          name={inputName.value}
+          surname={inputSurname.value}
+          birthday={inputBirthday.value}
+          phone={inputPhone.value}
+          url={inputSite.value}
+          about={textAbout.value}
+          stack={textStack.value}
+          description={textDescription.value}
+          btnReset={buttonReset}
+          showModal={formValid}
+        />
+      ) : (
+        <div className="formContainer">
+          <h1>Create a questionnaire</h1>
+          <form onSubmit={handleSubmit}>
+            <CustomInput
+              className="name"
+              labelName="Name:"
+              type="text"
+              placeholder="Name"
+              onChange={handleInputName}
+              record={inputName}
+            />
 
-          <CustomInput
-            className="surname"
-            labelName="Surname:"
-            type="text"
-            placeholder="Surname"
-            onChange={handleInputSurname}
-            record={inputSurname}
-          />
-          <CustomInput
-            className="birthday"
-            labelName="Date of Birth:"
-            type="date"
-            onChange={handleBirthday}
-            record={inputBirthday}
-          />
+            <CustomInput
+              className="surname"
+              labelName="Surname:"
+              type="text"
+              placeholder="Surname"
+              onChange={handleInputSurname}
+              record={inputSurname}
+            />
+            <CustomInput
+              className="birthday"
+              labelName="Date of Birth:"
+              type="date"
+              onChange={handleBirthday}
+              record={inputBirthday}
+            />
 
-          <CustomInput
-            className="phone"
-            labelName="Phone Number:"
-            type="tel"
-            placeholder="7-7777-77-77"
-            onChange={handlePhone}
-            record={inputPhone}
-            maxLength="12"
-          />
-          <CustomInput
-            className="link"
-            labelName="Site:"
-            type="url"
-            placeholder="https://"
-            onChange={handleUrl}
-            record={inputSite}
-          />
+            <CustomInput
+              className="phone"
+              labelName="Phone Number:"
+              type="tel"
+              placeholder="7-7777-77-77"
+              onChange={handlePhone}
+              record={inputPhone}
+              maxLength="12"
+            />
+            <CustomInput
+              className="link"
+              labelName="Site:"
+              type="url"
+              placeholder="https://"
+              onChange={handleUrl}
+              record={inputSite}
+            />
 
-          <CustomTextArea
-            className="textAbout"
-            areaName="About:"
-            name="about"
-            onChange={handleTextArea}
-            record={textAbout}
-            maxLength="600"
-          />
-          <CustomTextArea
-            className="textStack"
-            areaName="Technology Stack:"
-            name="stack"
-            onChange={handleTextArea}
-            record={textStack}
-            remCharacters={textStack.remaining}
-            maxLength="600"
-          />
-          <CustomTextArea
-            className="textDescription"
-            areaName="Description of the last project:"
-            onChange={handleTextArea}
-            record={textDescription}
-            remCharacters={textDescription.remaining}
-            maxLength="600"
-          />
-          <div className="formButtons">
-            <Button type="reset" innerText="Cancel" onClick={buttonReset} />
-            <Button type="submit" innerText="Save" />
-          </div>
-        </form>
-      </div>
+            <CustomTextArea
+              className="textAbout"
+              areaName="About:"
+              name="about"
+              onChange={handleTextArea}
+              record={textAbout}
+            />
+            <CustomTextArea
+              className="textStack"
+              areaName="Technology Stack:"
+              name="stack"
+              onChange={handleTextArea}
+              record={textStack}
+              remCharacters={textStack.remaining}
+            />
+            <CustomTextArea
+              className="textDescription"
+              areaName="Description of the last project:"
+              onChange={handleTextArea}
+              record={textDescription}
+              remCharacters={textDescription.remaining}
+            />
+            <div className="formButtons">
+              <Button type="reset" innerText="Cancel" onClick={buttonReset} />
+              <Button type="submit" innerText="Save" />
+            </div>
+          </form>
+        </div>
+      )}
     </>
   );
 };
